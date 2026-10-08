@@ -69,7 +69,7 @@ Staff-only pages: `/admin/` and `/dashboard/`. Password (re)set goes through an 
 - Run behind HTTPS; the container trusts `X-Forwarded-Proto` from your proxy.
 
 ## Deployment
-See [`deploy/truenas/README.md`](deploy/truenas/README.md) (TrueNAS SCALE 24.10+ / Docker) and `compose.yaml`.
+See [`deploy/truenas/README.md`](deploy/truenas/README.md) (TrueNAS SCALE 25.04+: Caddy with automatic HTTPS in front of the app, deployed with `deploy/truenas/deploy.sh`) and `compose.yaml`.
 Dependencies are locked with [uv](https://docs.astral.sh/uv/) (`uv.lock`); the image is built with `uv sync --locked`
 from digest-pinned base images, and Dependabot proposes updates through CI-checked pull requests.
 
