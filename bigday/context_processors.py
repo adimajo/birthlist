@@ -1,4 +1,20 @@
+import logging
+
 from django.conf import settings
+from django.contrib.staticfiles.storage import staticfiles_storage
+
+logger = logging.getLogger(__name__)
+
+
+def _static_url(path):
+    """URL of a static file, or "" (with a warning) when it is not configured or does not exist."""
+    if not path:
+        return ""
+    try:
+        return staticfiles_storage.url(path)
+    except ValueError:
+        logger.warning("Static file %s is configured but missing; ignoring it", path)
+        return ""
 
 
 def site(request):
@@ -8,7 +24,7 @@ def site(request):
         "couple_names": settings.COUPLE_NAMES,
         "baby_name": settings.BABY_NAME,
         "support_email": settings.BIRTHLIST_REPLY_EMAIL,
-        "header_image": settings.HEADER_IMAGE,
+        "header_image_url": _static_url(settings.HEADER_IMAGE),
         "gift_pot_url": settings.GIFT_POT_URL,
         "postal_address": settings.POSTAL_ADDRESS,
         "registration_enabled": bool(settings.REGISTRATION_CODE),

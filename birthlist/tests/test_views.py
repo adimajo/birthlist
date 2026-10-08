@@ -1,4 +1,5 @@
 from decimal import Decimal
+from unittest import mock
 
 from django.core import mail
 from django.urls import reverse
@@ -150,3 +151,31 @@ class PasswordResetTest(AppTestCase):
         response = self.client.post(reverse("password_reset"), {"email": "nobody@example.org"})
         self.assertRedirects(response, reverse("password_reset_done"))
         self.assertEqual(len(mail.outbox), 0)
+
+
+class HeaderImageTest(AppTestCase):
+    def setUp(self):
+        self.guest = Offrant.objects.create_user("Ned", "Stark", "ned@winterfell.gov")
+        self.client.force_login(self.guest)
+
+    def test_header_image_is_optional(self):
+        with self.settings(HEADER_IMAGE=""):
+            response = self.client.get(reverse("home"))
+        self.assertNotContains(response, 'id="main-header"')
+
+    def test_missing_header_image_does_not_break_the_page(self):
+        with (
+            self.settings(HEADER_IMAGE="bigday/images/missing.jpg"),
+            mock.patch(
+                "bigday.context_processors.staticfiles_storage", **{"url.side_effect": ValueError("no manifest")}
+            ),
+            self.assertLogs("bigday.context_processors", "WARNING"),
+        ):
+            response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'id="main-header"')
+
+    def test_configured_header_image_is_rendered(self):
+        with self.settings(HEADER_IMAGE="favicon.ico"):
+            response = self.client.get(reverse("home"))
+        self.assertContains(response, 'id="main-header"')

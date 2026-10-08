@@ -1,0 +1,14 @@
+# Certificates are obtained with the TLS-ALPN-01 challenge, which only needs port 443 to be reachable
+# from the internet (no port 80, no DNS API token).
+{$SITE_HOST} {
+	tls {
+		issuer acme {
+			disable_http_challenge
+		}
+	}
+	encode zstd gzip
+	request_body {
+		max_size 1MB
+	}
+	reverse_proxy birthlist:8000
+}

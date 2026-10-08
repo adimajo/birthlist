@@ -1,25 +1,63 @@
-# Example for TrueNAS SCALE 24.10+ (Apps -> Discover Apps -> Install via YAML) or any Docker host.
-# Replace <pool>, the image tag and the values below. Keep secrets in a private copy of this file.
+# birthlist behind Caddy (automatic HTTPS) on a dedicated LAN IP (macvlan).
+# Values come from deploy/truenas/deploy.env (see deploy.env.example); render with:
+#   docker compose --env-file deploy/truenas/deploy.private.env config
+name: birthlist
+
 services:
   birthlist:
-    # Pin an immutable tag (git sha) or digest, never :latest, so redeploys and rollbacks are deterministic.
-    image: ghcr.io/adimajo/birthlist:REPLACE_WITH_GIT_SHA
-    # build: .   # alternative: build locally from a clone of the repository
+    image: birthlist:${APP_TAG:?set APP_TAG}
     restart: unless-stopped
-    user: "568:568"
+    user: "568:568"          # the TrueNAS "apps" user; ${APP_DIR}/data must be owned by it
     read_only: true
     tmpfs:
       - /tmp
     cap_drop: [ALL]
     security_opt:
       - no-new-privileges:true
-    ports:
-      - "30080:8000"   # point your reverse proxy / tunnel at this port
     env_file:
-      - /mnt/<pool>/apps/birthlist/birthlist.env   # private copy of .env.example
+      - ${APP_DIR:?set APP_DIR}/birthlist.env
     volumes:
-      - /mnt/<pool>/apps/birthlist/data:/data               # SQLite database (snapshot this dataset)
-      - /mnt/<pool>/apps/birthlist/content:/content:ro      # private overlay: templates/ and static/
+      - ${APP_DIR}/data:/data                    # SQLite database: snapshot this dataset
+      - ${APP_DIR}/content:/content:ro           # private overlay (texts, photos)
       - static:/app/static_root
+    networks:
+      - internal
+
+  caddy:
+    image: caddy:2.11.7@sha256:f2a1290d0463aad60660d4ec134943f183ee2a5f6c3eb7bf32dd984f2f020772
+    restart: unless-stopped
+    depends_on:
+      birthlist:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /config
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      SITE_HOST: ${SITE_HOST:?set SITE_HOST}
+    volumes:
+      - ${APP_DIR}/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${APP_DIR}/caddy:/data                   # certificates and ACME account
+    networks:
+      internal: {}
+      lan:
+        ipv4_address: ${LAN_IP:?set LAN_IP}
+        gw_priority: 100                         # reply to internet clients through the LAN router
+
+networks:
+  internal: {}
+  lan:
+    driver: macvlan
+    driver_opts:
+      parent: ${LAN_PARENT:?set LAN_PARENT}
+    ipam:
+      config:
+        - subnet: ${LAN_SUBNET:?set LAN_SUBNET}
+          gateway: ${LAN_GATEWAY:?set LAN_GATEWAY}
+
 volumes:
-  static:
+  static: {}

@@ -15,6 +15,9 @@ PLAIN_STORAGES = {
     DEFAULT_FROM_EMAIL="Parents <parents@example.org>",
     SITE_URL="https://birthlist.example.org",
     EMAIL_HERO_IMAGE="",
+    HEADER_IMAGE="",
+    GIFT_POT_URL="",
+    POSTAL_ADDRESS=[],
 )
 class AppTestCase(TestCase):
     """Base class: no static manifest needed, in-memory mail, known registration code."""
