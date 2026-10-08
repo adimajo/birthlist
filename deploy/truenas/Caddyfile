@@ -1,5 +1,10 @@
 # Certificates are obtained with the TLS-ALPN-01 challenge, which only needs port 443 to be reachable
 # from the internet (no port 80, no DNS API token).
+{
+	# Set ACME_CA to https://acme-staging-v02.api.letsencrypt.org/directory to test without rate limits.
+	acme_ca {$ACME_CA:https://acme-v02.api.letsencrypt.org/directory}
+}
+
 {$SITE_HOST} {
 	tls {
 		issuer acme {

@@ -40,6 +40,7 @@ services:
       - no-new-privileges:true
     environment:
       SITE_HOST: ${SITE_HOST:?set SITE_HOST}
+      ACME_CA: ${ACME_CA:-https://acme-v02.api.letsencrypt.org/directory}
     volumes:
       - ${APP_DIR}/Caddyfile:/etc/caddy/Caddyfile:ro
       - ${APP_DIR}/caddy:/data                   # certificates and ACME account
