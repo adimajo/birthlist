@@ -1,0 +1,7 @@
+<ul>
+{% for guest in guests %}
+    <li>{{ guest.first_name }} {{ guest.last_name }}</li>
+{% empty %}
+    <li>Personne.</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Tableau de bord{% endblock %}
+{% block page_content %}
+<div class="container py-5 mt-5" id="main">
+    <h1>Tableau de bord</h1>
+    <table class="table table-striped">
+        <tr>
+            <td>Annonce non ouverte</td>
+            <td>{{ announcement_unopened.count }}<span class="text-muted"> / {{ guest_count }}</span></td>
+        </tr>
+        <tr>
+            <td>Faire-part non ouvert</td>
+            <td>{{ notice_unopened.count }}<span class="text-muted"> / {{ guest_count }}</span></td>
+        </tr>
+    </table>
+    <h2>Envoyer un email de test (à vous seul)</h2>
+    <form method="post" action="{% url 'rsvp-email-test' %}" class="d-inline">{% csrf_token %}
+        <button class="btn btn-outline-secondary" type="submit">Annonce</button>
+    </form>
+    <form method="post" action="{% url 'invitation-email-test' %}" class="d-inline">{% csrf_token %}
+        <button class="btn btn-outline-secondary" type="submit">Faire-part</button>
+    </form>
+    <a class="btn btn-link" href="{% url 'rsvp-email' %}">Aperçu annonce</a>
+    <a class="btn btn-link" href="{% url 'invitation-email' %}">Aperçu faire-part</a>
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <h2>Annonce non ouverte</h2>
+            {% include "offrants/partials/offrant_list.html" with guests=announcement_unopened %}
+        </div>
+        <div class="col-lg-6">
+            <h2>Faire-part non ouvert</h2>
+            {% include "offrants/partials/offrant_list.html" with guests=notice_unopened %}
+        </div>
+    </div>
+</div>
+{% endblock %}
