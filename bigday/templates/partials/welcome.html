@@ -1,0 +1,33 @@
+{# Default welcome text. Override by creating partials/welcome.html in the content overlay directory. #}
+<section class="bg-info" id="welcome">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="section-heading">Bienvenue !</h2>
+                <hr>
+                <p class="text-left">
+                    Vous trouverez ici notre liste de naissance, donnée à titre indicatif.
+                </p>
+                <p class="text-left">
+                    Dans la colonne « Intéresse », vous voyez les personnes (et leur email) intéressées par l'achat
+                    commun d'un cadeau : ajoutez-vous à la liste et contactez-les !
+                    Une fois un cadeau acheté, cliquez sur « Acheté » pour éviter les doublons.
+                </p>
+                {% if gift_pot_url %}
+                <p class="text-left">
+                    Si vous souhaitez participer librement, vous pouvez contribuer à
+                    <a href="{{ gift_pot_url }}" rel="noopener noreferrer">notre cagnotte</a>.
+                </p>
+                {% endif %}
+                <p class="text-left">
+                    La seconde main est la bienvenue !
+                </p>
+                {% if postal_address %}
+                <p class="text-left">Si vous ne pouvez pas nous remettre votre cadeau en main propre, notre adresse postale est :</p>
+                <p class="text-left">{% for line in postal_address %}{{ line }}<br>{% endfor %}</p>
+                {% endif %}
+                <p class="text-right">- {{ couple_names }}</p>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block welcome %}{% include "partials/welcome.html" %}{% endblock %}
+{% block page_content %}
+<section id="app">
+    <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th><a href="?order_by=name&direction={{ next_direction }}#app">Cadeau</a></th>
+                <th>Image &amp; lien</th>
+                <th><a href="?order_by=price&direction={{ next_direction }}#app">Prix</a></th>
+                <th>Description</th>
+                <th>Intéresse</th>
+                <th>Acheté</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for gift in gifts %}
+            <tr id="gift-{{ gift.pk }}">
+                <td>{{ gift.name }}</td>
+                <td>
+                    {% if gift.link %}<a href="{{ gift.link }}" target="_blank" rel="noopener noreferrer">{% endif %}
+                    {% if gift.photo %}<img src="{{ gift.photo }}" width="120" alt="{{ gift.name }}" referrerpolicy="no-referrer">{% else %}voir{% endif %}
+                    {% if gift.link %}</a>{% endif %}
+                </td>
+                <td><span class="text-nowrap">{{ gift.price }} €</span></td>
+                <td>{{ gift.description }}</td>
+                <td>
+                    {% with interested=gift.interested_families.all buyers=gift.bought_by.all %}
+                    {% for family in interested %}
+                        <div>{{ family.first_name }} {{ family.last_name }} - <a href="mailto:{{ family.email }}">{{ family.email }}</a></div>
+                    {% endfor %}
+                    {% if user in interested %}
+                        <form action="{% url 'not_interet' gift.pk %}" method="post">{% csrf_token %}
+                            <button type="submit" class="btn btn-outline-info">Je ne suis plus intéressé(e)</button>
+                        </form>
+                    {% elif not buyers %}
+                        <form action="{% url 'interet' gift.pk %}" method="post">{% csrf_token %}
+                            <button type="submit" class="btn btn-outline-info">Je suis intéressé(e)</button>
+                        </form>
+                    {% endif %}
+                </td>
+                <td>
+                    {% for family in buyers %}
+                        <div>{{ family.first_name }} {{ family.last_name }}</div>
+                    {% endfor %}
+                    {% if user in buyers %}
+                        <form action="{% url 'not_bought' gift.pk %}" method="post">{% csrf_token %}
+                            <button type="submit" class="btn btn-outline-info">Je ne l'ai pas acheté(e)</button>
+                        </form>
+                    {% else %}
+                        <form action="{% url 'bought' gift.pk %}" method="post">{% csrf_token %}
+                            <button type="submit" class="btn btn-outline-info">Je l'ai acheté(e)</button>
+                        </form>
+                    {% endif %}
+                    {% endwith %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="text-center text-muted">La liste est vide pour le moment.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</section>
+{% endblock %}

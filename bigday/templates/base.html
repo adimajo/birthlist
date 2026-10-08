@@ -1,0 +1,39 @@
+{% load static %}<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="same-origin">
+    <title>{% block title %}{{ site_title }}{% endblock %}</title>
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bigday/css/creative2.css' %}">
+    {% block page_head %}{% endblock %}
+</head>
+<body id="page-top">
+    <nav id="mainNav" class="navbar navbar-light bg-light fixed-top">
+        <a class="navbar-brand page-scroll" href="{% url 'home' %}">{{ site_title }} - {{ couple_names }}</a>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'logout' %}" class="form-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Se déconnecter</button>
+        </form>
+        {% endif %}
+    </nav>
+    {% if header_image %}<header id="main-header" style="background-image: url('{% static header_image %}')"></header>{% endif %}
+    {% if messages %}
+    <div class="container mt-5 pt-4">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% block welcome %}{% endblock %}
+    {% block page_content %}{% endblock %}
+    {% include "partials/contact.html" %}
+    {% include "partials/footer.html" %}
+    <script src="{% static 'bigday/js/footer.js' %}"></script>
+    {% block page_js %}{% endblock %}
+</body>
+</html>
