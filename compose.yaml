@@ -22,6 +22,7 @@ services:
       - static:/app/static_root
     networks:
       - internal
+      - egress                                   # outbound SMTP
 
   caddy:
     image: caddy:2.11.7@sha256:f2a1290d0463aad60660d4ec134943f183ee2a5f6c3eb7bf32dd984f2f020772
@@ -46,10 +47,13 @@ services:
       internal: {}
       lan:
         ipv4_address: ${LAN_IP:?set LAN_IP}
-        gw_priority: 100                         # reply to internet clients through the LAN router
 
 networks:
-  internal: {}
+  # No gateway on "internal": the only default route of Caddy is the LAN router (via macvlan), so replies to
+  # internet clients leave through the right interface.
+  internal:
+    internal: true
+  egress: {}
   lan:
     driver: macvlan
     driver_opts:
