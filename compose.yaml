@@ -1,0 +1,25 @@
+# Example for TrueNAS SCALE 24.10+ (Apps -> Discover Apps -> Install via YAML) or any Docker host.
+# Replace <pool>, the image tag and the values below. Keep secrets in a private copy of this file.
+services:
+  birthlist:
+    # Pin an immutable tag (git sha) or digest, never :latest, so redeploys and rollbacks are deterministic.
+    image: ghcr.io/adimajo/birthlist:REPLACE_WITH_GIT_SHA
+    # build: .   # alternative: build locally from a clone of the repository
+    restart: unless-stopped
+    user: "568:568"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "30080:8000"   # point your reverse proxy / tunnel at this port
+    env_file:
+      - /mnt/<pool>/apps/birthlist/birthlist.env   # private copy of .env.example
+    volumes:
+      - /mnt/<pool>/apps/birthlist/data:/data               # SQLite database (snapshot this dataset)
+      - /mnt/<pool>/apps/birthlist/content:/content:ro      # private overlay: templates/ and static/
+      - static:/app/static_root
+volumes:
+  static:
