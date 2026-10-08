@@ -39,7 +39,7 @@ Notes
 ## 3. First steps
 ```bash
 docker exec -it ix-birthlist-birthlist-1 python manage.py createsuperuser       # then log in at /admin/
-docker cp guests.csv ...   # or place guests.csv in <APP_DIR>/data (chown 568:568), then:
+# put guests.csv in <APP_DIR>/data first (chown 568:568)
 docker exec ix-birthlist-birthlist-1 python manage.py import_guests /data/guests.csv --dry-run
 docker exec ix-birthlist-birthlist-1 python manage.py import_guests /data/guests.csv
 docker exec ix-birthlist-birthlist-1 python manage.py send_campaign announcement                 # dry run
