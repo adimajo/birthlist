@@ -7,6 +7,10 @@ updates:
     groups:
       python:
         patterns: ["*"]
+    ignore:
+      # Stay on the 5.2 LTS line; move deliberately (and update pyproject.toml) for the next LTS.
+      - dependency-name: django
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
   - package-ecosystem: docker
     directory: /
     schedule:
