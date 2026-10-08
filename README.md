@@ -17,7 +17,6 @@ The project started as a fork of [django-wedding-website](https://github.com/czu
 ```bash
 cp .env.example .env            # set DEBUG=true and EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
 uv sync
-set -a; . ./.env; set +a
 uv run python manage.py migrate
 uv run python manage.py createsuperuser
 uv run python manage.py runserver
@@ -32,7 +31,8 @@ uv run ruff check . && uv run ruff format --check .
 
 ## Configuration
 
-All settings are environment variables; `.env.example` lists them with comments. The important ones:
+All settings are environment variables (a `.env` file at the project root is loaded automatically, without overriding
+real environment variables); `.env.example` lists them with comments. The important ones:
 
 | Variable | Meaning |
 |---|---|

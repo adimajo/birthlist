@@ -36,3 +36,24 @@ class GuestImporterTest(AppTestCase):
         self.assertEqual(len(ned.rsvp_id), 32)
         self.assertNotEqual(ned.rsvp_id, ned.invitation_id)
         self.assertFalse(ned.has_usable_password())
+
+
+class EnvFileTest(AppTestCase):
+    def test_env_file_is_loaded_without_overriding_the_environment(self):
+        import os
+        import tempfile
+        from unittest import mock
+
+        from bigday.settings import load_env_file
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / ".env"
+            path.write_text('# comment\nA_NAME=Alex et Sam\nA_QUOTED="with spaces"\nA_SET=file\n\nbroken line\n')
+            with mock.patch.dict(os.environ, {"A_SET": "env"}):
+                load_env_file(path)
+                self.assertEqual(os.environ["A_NAME"], "Alex et Sam")
+                self.assertEqual(os.environ["A_QUOTED"], "with spaces")
+                self.assertEqual(os.environ["A_SET"], "env")
+                for key in ("A_NAME", "A_QUOTED"):
+                    del os.environ[key]
+            load_env_file(Path(directory) / "missing")  # silently ignored
