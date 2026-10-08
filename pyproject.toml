@@ -1,0 +1,41 @@
+[project]
+name = "birthlist"
+version = "1.0.0"
+description = "Private birth gift list with guest accounts, e-mail campaigns and per-guest magic links."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "django>=5.2,<5.3",
+    "django-crispy-forms>=2.3,<3",
+    "crispy-bootstrap4>=2024.10",
+    "gunicorn>=23.0",
+    "whitenoise>=6.8",
+]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.6",
+    "pip-audit>=2.7",
+    "ruff>=0.8",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["content", "static_root"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "DJ", "UP", "S"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"*/tests/*" = ["S"]
+"*/migrations/*" = ["E501"]
+
+[tool.coverage.run]
+source = ["bigday", "birthlist", "offrants"]
+omit = ["*/migrations/*", "*/tests/*", "bigday/test_utils.py", "bigday/wsgi.py", "manage.py"]
