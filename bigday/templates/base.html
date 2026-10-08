@@ -21,7 +21,7 @@
         </form>
         {% endif %}
     </nav>
-    {% if header_image_url %}<header id="main-header" style="background-image: url('{{ header_image_url }}')"></header>{% endif %}
+    {% if header_image_url %}<header id="main-header" style="background-image: url('{{ header_image_url }}'); background-size: {{ header_image_fit }}"></header>{% endif %}
     {% if messages %}
     <div class="container mt-5 pt-4">
         {% for message in messages %}

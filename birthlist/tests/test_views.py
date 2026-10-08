@@ -176,6 +176,7 @@ class HeaderImageTest(AppTestCase):
         self.assertNotContains(response, 'id="main-header"')
 
     def test_configured_header_image_is_rendered(self):
-        with self.settings(HEADER_IMAGE="favicon.ico"):
+        with self.settings(HEADER_IMAGE="favicon.ico", HEADER_IMAGE_FIT="contain"):
             response = self.client.get(reverse("home"))
         self.assertContains(response, 'id="main-header"')
+        self.assertContains(response, "background-size: contain")

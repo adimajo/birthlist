@@ -30,8 +30,8 @@ scp -q $SSH_OPTS "$APP_ENV" "$TARGET:$APP_DIR/birthlist.env"
 sed "s/^APP_TAG=.*/APP_TAG=$TAG/" "$DEPLOY_ENV" | ssh_run "cat > $APP_DIR/deploy.env"
 ssh_run "cp $APP_DIR/src/deploy/truenas/Caddyfile $APP_DIR/Caddyfile && chmod 600 $APP_DIR/birthlist.env $APP_DIR/deploy.env"
 if [ -d content ]; then
-  echo "==> Syncing the private overlay (content/)"
-  tar -C content -c . | ssh_run "tar -x -C $APP_DIR/content && chmod -R a+rX $APP_DIR/content"
+  echo "==> Mirroring the private overlay (content/)"
+  tar -C content -c . | ssh_run "find $APP_DIR/content -mindepth 1 -delete; tar -x -C $APP_DIR/content && chmod -R a+rX $APP_DIR/content"
 fi
 
 echo "==> Building the image on the host"

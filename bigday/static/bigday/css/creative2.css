@@ -179,6 +179,12 @@ aside {
     }
 }
 
+#main-header {
+    min-height: 60vh;
+    background-color: #000;
+    background-repeat: no-repeat;
+}
+
 header {
     position: relative;
     width: 100%;

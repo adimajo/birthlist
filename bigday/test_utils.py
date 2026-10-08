@@ -16,6 +16,7 @@ PLAIN_STORAGES = {
     SITE_URL="https://birthlist.example.org",
     EMAIL_HERO_IMAGE="",
     HEADER_IMAGE="",
+    HEADER_IMAGE_FIT="cover",
     GIFT_POT_URL="",
     POSTAL_ADDRESS=[],
 )

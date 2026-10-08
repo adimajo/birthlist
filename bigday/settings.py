@@ -170,6 +170,10 @@ GIFT_POT_URL = env_str("GIFT_POT_URL")
 POSTAL_ADDRESS = [line.strip() for line in env_str("POSTAL_ADDRESS").split("|") if line.strip()]
 # Full-width hero image at the top of the site, relative to the static dirs (empty = none).
 HEADER_IMAGE = env_str("HEADER_IMAGE")
+# "cover" fills the whole band (crops), "contain" shows the whole image on a black background.
+HEADER_IMAGE_FIT = env_str("HEADER_IMAGE_FIT", "cover")
+if HEADER_IMAGE_FIT not in {"cover", "contain"}:
+    raise ImproperlyConfigured("HEADER_IMAGE_FIT must be 'cover' or 'contain'")
 # Image embedded in e-mails, relative to the static dirs (e.g. bigday/images/hero.jpg). Empty = no image.
 EMAIL_HERO_IMAGE = env_str("EMAIL_HERO_IMAGE")
 ANNOUNCEMENT_SUBJECT = env_str("ANNOUNCEMENT_SUBJECT", SITE_TITLE)

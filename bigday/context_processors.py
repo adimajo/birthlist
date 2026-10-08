@@ -25,6 +25,7 @@ def site(request):
         "baby_name": settings.BABY_NAME,
         "support_email": settings.BIRTHLIST_REPLY_EMAIL,
         "header_image_url": _static_url(settings.HEADER_IMAGE),
+        "header_image_fit": settings.HEADER_IMAGE_FIT,
         "gift_pot_url": settings.GIFT_POT_URL,
         "postal_address": settings.POSTAL_ADDRESS,
         "registration_enabled": bool(settings.REGISTRATION_CODE),
